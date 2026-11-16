@@ -4,7 +4,7 @@ const $=id=>document.getElementById(id), canvas=$('drawing'), ctx=canvas.getCont
 let walls=[], openings=[], rooms=[], dimensions=[], selectedWall=-1, tool='select', drag=null, scale=42, scene,camera,renderer,controls,group,view='plan';
 const doorWidth=0.9, windowWidth=1.2, doorHeight=2.1, windowSill=0.9, windowHead=2.1;
 function size(){const r=canvas.getBoundingClientRect(),d=devicePixelRatio||1;canvas.width=r.width*d;canvas.height=r.height*d;ctx.setTransform(d,0,0,d,0,0);draw()}
-function world(x,y){return{x:(x-canvas.clientWidth/2)/scale,y:(y-canvas.clientHeight/2)/scale}}
+function world(x,y){const p={x:(x-canvas.clientWidth/2)/scale,y:(y-canvas.clientHeight/2)/scale};return typeof snapEnabled!=='undefined'&&snapEnabled?{x:Math.round(p.x*2)/2,y:Math.round(p.y*2)/2}:p}
 function screen(p){return{x:canvas.clientWidth/2+p.x*scale,y:canvas.clientHeight/2+p.y*scale}}
 function projectOnWall(p,w){const dx=w.b.x-w.a.x,dy=w.b.y-w.a.y,l2=dx*dx+dy*dy;if(!l2)return{t:0,dist:Infinity};const t=Math.max(0,Math.min(1,((p.x-w.a.x)*dx+(p.y-w.a.y)*dy)/l2));const x=w.a.x+t*dx,y=w.a.y+t*dy;return{t,dist:Math.hypot(p.x-x,p.y-y)}}
 function draw(){const w=canvas.clientWidth,h=canvas.clientHeight;ctx.clearRect(0,0,w,h);ctx.fillStyle='#111a14';ctx.fillRect(0,0,w,h);ctx.strokeStyle='#2a382e';ctx.lineWidth=1;for(let x=w/2%21;x<w;x+=21){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}for(let y=h/2%21;y<h;y+=21){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
