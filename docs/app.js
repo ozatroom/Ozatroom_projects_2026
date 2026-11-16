@@ -60,11 +60,6 @@ $('deleteSelected').onclick=()=>{if(selectedWall<0){alert('Сначала выб
 $('clear').onclick=()=>{if(confirm('Очистить план и все элементы?')){walls=[];openings=[];rooms=[];dimensions=[];selectedWall=-1;refresh()}};
 $('new').onclick=()=>{walls=[];openings=[];rooms=[];dimensions=[];selectedWall=-1;$('name').value='Новый проект';refresh()};
 ['height','thick','wallPrice','floorPrice','rate','name'].forEach(id=>$(id).addEventListener('input',refresh));
-$('csv').onclick=()=>{const data='Позиция;Сумма TJS
-Стены;'+$('wc').textContent+'
-Пол;'+$('fc').textContent+'
-Итого;'+$('total').textContent+'
-Двери;'+openings.filter(o=>o.type==='door').length+'
-Окна;'+openings.filter(o=>o.type==='window').length,a=document.createElement('a'),u=URL.createObjectURL(new Blob(['\\uFEFF'+data],{type:'text/csv;charset=utf-8'}));a.href=u;a.download='ozatroom-bim-estimate.csv';a.click();URL.revokeObjectURL(u)};
+$('csv').onclick=()=>{const data=['Позиция;Сумма TJS','Стены;'+$('wc').textContent,'Пол;'+$('fc').textContent,'Итого;'+$('total').textContent,'Двери;'+openings.filter(o=>o.type==='door').length,'Окна;'+openings.filter(o=>o.type==='window').length].join('\\n'),a=document.createElement('a'),u=URL.createObjectURL(new Blob(['\\uFEFF'+data],{type:'text/csv;charset=utf-8'}));a.href=u;a.download='ozatroom-bim-estimate.csv';a.click();URL.revokeObjectURL(u)}
 try{const s=JSON.parse(localStorage.getItem('ozatroomBimMobile'));if(s){walls=s.walls||[];openings=s.openings||[];rooms=s.rooms||[];dimensions=s.dimensions||[];$('name').value=s.name||'Новый проект'}}catch{}
 $('snapToggle').onclick=()=>{snapEnabled=!snapEnabled;$('snapToggle').textContent='Привязка к сетке: '+(snapEnabled?'ВКЛ':'ВЫКЛ')};$('roofBtn').onclick=()=>{roofEnabled=!roofEnabled;$('roofBtn').textContent=roofEnabled?'Убрать крышу':'🏠 Создать крышу';refresh()};$('furnitureBtn').onclick=()=>{if(!rooms.length){alert('Сначала создай помещение');return}const r=rooms[rooms.length-1];furniture.push({x:(r.a.x+r.b.x)/2,z:(r.a.y+r.b.y)/2});refresh()};$('walkBtn').onclick=toggleWalk;$('facadeBtn').onclick=()=>drawReport('facade');$('sectionBtn').onclick=()=>drawReport('section');$('materialsBtn').onclick=updateMaterials;$('pdfBtn').onclick=()=>exportA3().catch(e=>alert(e.message));init3d();new ResizeObserver(size).observe(canvas.parentElement);size();refresh();
