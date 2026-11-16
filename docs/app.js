@@ -1,7 +1,7 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
 import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js';
 const $=id=>document.getElementById(id), canvas=$('drawing'), ctx=canvas.getContext('2d');
-let walls=[], openings=[], rooms=[], dimensions=[], selectedWall=-1, tool='select', drag=null, scale=42, scene,camera,renderer,controls,group,view='plan';
+let walls=[], openings=[], rooms=[], dimensions=[], selectedWall=-1, hoverWall=-1, tool='select', drag=null, scale=42, scene,camera,renderer,controls,group,view='plan';
 const doorWidth=0.9, windowWidth=1.2, doorHeight=2.1, windowSill=0.9, windowHead=2.1;
 function size(){const r=canvas.getBoundingClientRect(),d=devicePixelRatio||1;canvas.width=r.width*d;canvas.height=r.height*d;ctx.setTransform(d,0,0,d,0,0);draw()}
 function world(x,y){const p={x:(x-canvas.clientWidth/2)/scale,y:(y-canvas.clientHeight/2)/scale};return typeof snapEnabled!=='undefined'&&snapEnabled?{x:Math.round(p.x*2)/2,y:Math.round(p.y*2)/2}:p}
@@ -10,6 +10,17 @@ function projectOnWall(p,w){const dx=w.b.x-w.a.x,dy=w.b.y-w.a.y,l2=dx*dx+dy*dy;i
 function draw(){const w=canvas.clientWidth,h=canvas.clientHeight;ctx.clearRect(0,0,w,h);ctx.fillStyle='#111a14';ctx.fillRect(0,0,w,h);ctx.strokeStyle='#2a382e';ctx.lineWidth=1;for(let x=w/2%21;x<w;x+=21){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}for(let y=h/2%21;y<h;y+=21){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
  walls.forEach((a,i)=>{const p=screen(a.a),q=screen(a.b);ctx.strokeStyle=i===selectedWall?'#f3c66f':'#b9e3c4';ctx.lineWidth=Math.max(5,a.t/1000*scale);ctx.lineCap='square';ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke();
  openings.filter(o=>o.wall===i).forEach(o=>{const x=a.a.x+(a.b.x-a.a.x)*o.t,y=a.a.y+(a.b.y-a.a.y)*o.t,dx=a.b.x-a.a.x,dy=a.b.y-a.a.y,len=Math.hypot(dx,dy),ux=dx/len,uy=dy/len,half=o.width/2,aa=screen({x:x-ux*half,y:y-uy*half}),bb=screen({x:x+ux*half,y:y+uy*half});ctx.strokeStyle='#111a14';ctx.lineWidth=Math.max(7,a.t/1000*scale+3);ctx.beginPath();ctx.moveTo(aa.x,aa.y);ctx.lineTo(bb.x,bb.y);ctx.stroke();ctx.strokeStyle=o.type==='door'?'#e5bd82':'#75c9e9';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(aa.x,aa.y);ctx.lineTo(bb.x,bb.y);ctx.stroke();if(o.type==='door'){ctx.beginPath();ctx.arc(aa.x,aa.y,Math.max(8,o.width*scale),0,Math.PI/2);ctx.stroke()}else{ctx.beginPath();ctx.moveTo(aa.x-uy*5,aa.y+ux*5);ctx.lineTo(bb.x-uy*5,bb.y+ux*5);ctx.stroke()}})});
+ const dimIndex=hoverWall>=0?hoverWall:selectedWall;
+ if(dimIndex>=0&&walls[dimIndex]){
+  const wall=walls[dimIndex],p=screen(wall.a),q=screen(wall.b),dx=q.x-p.x,dy=q.y-p.y,len=Math.hypot(dx,dy)||1,nx=-dy/len,ny=dx/len,off=22;
+  const a={x:p.x+nx*off,y:p.y+ny*off},b={x:q.x+nx*off,y:q.y+ny*off};
+  ctx.save();ctx.strokeStyle='#ffd477';ctx.fillStyle='#ffd477';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(p.x+nx*5,p.y+ny*5);ctx.lineTo(a.x+nx*5,a.y+ny*5);ctx.moveTo(q.x+nx*5,q.y+ny*5);ctx.lineTo(b.x+nx*5,b.y+ny*5);ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+  const ang=Math.atan2(dy,dx),tick=5;
+  for(const z of [a,b]){ctx.beginPath();ctx.moveTo(z.x-nx*tick-Math.cos(ang)*tick,z.y-ny*tick-Math.sin(ang)*tick);ctx.lineTo(z.x+nx*tick+Math.cos(ang)*tick,z.y+ny*tick+Math.sin(ang)*tick);ctx.stroke()}
+  const label=Math.hypot(wall.b.x-wall.a.x,wall.b.y-wall.a.y).toFixed(2)+' м',mx=(a.x+b.x)/2,my=(a.y+b.y)/2;
+  ctx.font='bold 13px system-ui';const tw=ctx.measureText(label).width+16;ctx.fillStyle='#17251c';ctx.fillRect(mx-tw/2,my-13,tw,25);ctx.strokeStyle='#ffd477';ctx.strokeRect(mx-tw/2,my-13,tw,25);ctx.fillStyle='#ffd477';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(label,mx,my);ctx.restore();
+ }
  dimensions.forEach(d=>{const p=screen(d.a),q=screen(d.b);ctx.strokeStyle='#f3c66f';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke();ctx.fillStyle='#f3c66f';ctx.font='12px system-ui';ctx.fillText(Math.hypot(d.b.x-d.a.x,d.b.y-d.a.y).toFixed(2)+' m',(p.x+q.x)/2+5,(p.y+q.y)/2-5)});
  if(drag){const p=screen(drag.a),q=screen(drag.b);ctx.strokeStyle='#e5c18d';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke()}}
 function init3d(){const host=$('three');scene=new THREE.Scene();scene.background=new THREE.Color('#121915');camera=new THREE.PerspectiveCamera(45,1,.1,1000);camera.position.set(9,8,11);renderer=new THREE.WebGLRenderer({antialias:true});host.appendChild(renderer.domElement);controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.touches.ONE=THREE.TOUCH.ROTATE;controls.touches.TWO=THREE.TOUCH.DOLLY_PAN;scene.add(new THREE.HemisphereLight(0xe4f0e6,0x526052,2));const light=new THREE.DirectionalLight(0xffffff,2);light.position.set(6,10,5);scene.add(light);scene.add(new THREE.GridHelper(30,60,0x435449,0x29362e));group=new THREE.Group();scene.add(group);new ResizeObserver(resize3d).observe(host);resize3d();animate()}
@@ -48,7 +59,7 @@ canvas.addEventListener('pointerdown',e=>{const r=canvas.getBoundingClientRect()
  else if(tool==='door'||tool==='window')addOpeningAt(p,tool);
  else if(tool==='select'){let best={dist:Infinity,index:-1};walls.forEach((w,i)=>{const pr=projectOnWall(p,w);if(pr.dist<best.dist)best={dist:pr.dist,index:i}});selectedWall=best.dist<.35?best.index:-1;draw()}
 });
-canvas.addEventListener('pointermove',e=>{if(drag){const r=canvas.getBoundingClientRect();drag.b=world(e.clientX-r.left,e.clientY-r.top);draw()}});
+canvas.addEventListener('pointermove',e=>{const r=canvas.getBoundingClientRect(),p=world(e.clientX-r.left,e.clientY-r.top);if(drag){drag.b=p;draw();return}let best={dist:Infinity,index:-1};walls.forEach((w,i)=>{const pr=projectOnWall(p,w);if(pr.dist<best.dist)best={dist:pr.dist,index:i}});const next=best.dist<0.4?best.index:-1;if(next!==hoverWall){hoverWall=next;draw()}});
 canvas.addEventListener('pointerup',()=>{if(drag){const d=Math.hypot(drag.b.x-drag.a.x,drag.b.y-drag.a.y);
  if(d>.15&&tool==='wall')walls.push({...drag,t:+$('thick').value||200});
  if(d>.5&&tool==='room'){const a={x:Math.min(drag.a.x,drag.b.x),y:Math.min(drag.a.y,drag.b.y)},b={x:Math.max(drag.a.x,drag.b.x),y:Math.max(drag.a.y,drag.b.y)};rooms.push({a,b});const corners=[a,{x:b.x,y:a.y},b,{x:a.x,y:b.y}];for(let i=0;i<4;i++)walls.push({a:corners[i],b:corners[(i+1)%4],t:+$('thick').value||200})}
