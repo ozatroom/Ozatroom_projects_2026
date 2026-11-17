@@ -1,4 +1,4 @@
-import { GeometryCore } from './geometry-core.js?v=20261117-43';
+import { GeometryCore } from './geometry-core.js?v=20261118-01';
 import { createModelingTools } from './modeling-tools.js?v=20261117-45';
 let geometryCore=new GeometryCore(),geometrySyncError=null,geometryMode='object',geometrySelection=null,geometryDrag=null;
 let modelingToolsEnabled=true;
