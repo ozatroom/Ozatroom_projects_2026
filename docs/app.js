@@ -110,6 +110,14 @@ function syncGeometryCore(){
  const el=$('geometryStatus');
  if(el){const d=geometryCore.exportData(),v=geometryCore.validateGeometry();el.innerHTML='<b>GEOMETRY CORE · v1</b><span>'+d.vertices.length+' вершин · '+d.edges.length+' рёбер · '+d.faces.length+' граней</span><span class="'+(geometrySyncError?'geometry-error':v.errors.length?'geometry-error':'geometry-ok')+'">'+(geometrySyncError?'Ошибка синхронизации: '+geometrySyncError:v.errors.length?'Ошибок: '+v.errors.length:'Геометрия синхронизирована · ошибок: 0')+'</span>'}
 }
+function runFaceDetection(){
+ const result=geometryCore.detectFaces({create:true});
+ const status=$('faceDetectionStatus');
+ if(status)status.innerHTML='<b>FACE DETECTION · v1</b><span>Контуров найдено: '+result.loops+' · новых граней: '+result.created.length+'</span><span>'+result.skipped.length+' пропущено · ошибок: '+result.errors.length+(result.limited?' · достигнут лимит поиска':'')+'</span>';
+ if(result.created.length){draw();rebuild();updateStats();renderOutliner();renderDetails();persistLocal();if(transformGizmo)attachGizmo()}
+ if(result.errors.length)console.warn('Face Detection errors:',result.errors);
+}
+$('detectFaces').addEventListener('click',runFaceDetection);
 function refresh(){syncGeometryCore();draw();rebuild();if(renderer?.shadowMap)renderer.shadowMap.needsUpdate=true;updateStats();renderOutliner();renderDetails();persistLocal();if(transformGizmo)attachGizmo()}
 function updateStats(){const L=walls.reduce((s,w)=>s+len(w),0),wallArea=walls.reduce((s,w)=>s+len(w)*n('height',3),0)-openings.reduce((s,o)=>s+o.width*(o.height??(o.type==='door'?2.1:1.2))-(o.type==='window'?o.width*(o.sill??.9):0),0),vol=Math.max(0,wallArea*n('thick',200)/1000),floor=rooms.reduce((s,r)=>s+areaRoom(r),0),wc=vol*n('wallPrice',850),fc=floor*n('floorPrice',180),total=wc+fc,rate=n('rate',10.9);$('count').textContent=walls.length+' стен · '+openings.length+' проёмов';$('length').textContent=L.toFixed(2)+' м';$('area').textContent=floor.toFixed(2)+' м²';$('volume').textContent=vol.toFixed(2)+' м³';$('wc').textContent=Math.round(wc)+' TJS';$('fc').textContent=Math.round(fc)+' TJS';$('total').textContent=Math.round(total)+' TJS';$('usd').textContent='≈ $'+(total/(rate||10.9)).toFixed(2)+' USD'}
 function renderOutliner(){const el=$('outliner');if(!el)return;const objects=allObjects();el.innerHTML=objects.length?objects.map(x=>'<button class="outliner-item '+((isObjectSelected(x.id))?'selected':'')+'" data-id="'+x.id+'"><span>'+({wall:'▰',door:'🚪',window:'▣',room:'▧',furniture:'▦',stair:'↗',light:'☼'}[x.type])+'</span>'+x.name+'</button>').join(''):'<span class="muted">Нет объектов в сцене</span>';el.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>{selected=b.dataset.id;selectedIds=new Set([selected]);const obj=selectedObject();if(obj?.type==='wall')selectedWallId=obj.id;renderOutliner();renderDetails();draw();attachGizmo()})}
