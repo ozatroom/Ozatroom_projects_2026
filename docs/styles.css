@@ -147,3 +147,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .viewport-tools .row>.geometry-mode.icon-tool svg,.viewport-tools .row>#detectFaces.icon-tool svg{width:19px!important;height:19px!important;flex:0 0 19px!important;}
 .viewport-tools .row>.geometry-mode.icon-tool .sr-only,.viewport-tools .row>#detectFaces.icon-tool .sr-only{display:none!important;}
 @media(max-width:760px){.viewport-tools .row{display:flex!important;flex-wrap:wrap!important}.viewport-tools .row>.geometry-mode.icon-tool,.viewport-tools .row>#detectFaces.icon-tool{flex:0 0 38px!important}}
+
+/* Definitive fix: toolbar mode buttons must not inherit .row>* flex:1 */
+.viewport-topbar .viewport-tools .row>button.geometry-mode.icon-tool,.viewport-topbar .viewport-tools .row>#detectFaces.icon-tool{flex:0 0 38px!important;inline-size:38px!important;min-inline-size:38px!important;max-inline-size:38px!important;block-size:36px!important;min-block-size:36px!important;max-block-size:36px!important;}
+.viewport-topbar .viewport-tools .row>button.geometry-mode.icon-tool svg,.viewport-topbar .viewport-tools .row>#detectFaces.icon-tool svg{flex:none!important;inline-size:19px!important;block-size:19px!important;}
