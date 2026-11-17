@@ -1,4 +1,4 @@
-import { GeometryCore } from './geometry-core.js';
+import { GeometryCore } from './geometry-core.js?v=20261117-43';
 let geometryCore=new GeometryCore(),geometrySyncError=null,geometryMode='object',geometrySelection=null,geometryDrag=null;
 let THREE=null, OrbitControls=null,TransformControls=null,raycaster=null,mouseNdc=null,threePointerDown=null,transformGizmo=null,gizmoPivot=null,gizmoStart=null,gizmoSnapshot=null,gizmoMeshSnapshots=[],gizmoStartMatrix=null,gizmoMode='translate';
 const $=id=>document.getElementById(id),canvas=$('drawing'),ctx=canvas.getContext('2d');
