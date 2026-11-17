@@ -1,0 +1,18 @@
+import { SketchEngine } from './sketch-engine.js';
+const cases=[];
+const test=(name,fn)=>{try{fn();cases.push({name,ok:true})}catch(e){cases.push({name,ok:false,error:e.message})}};
+const near=(a,b,t=1e-8)=>{if(Math.abs(a-b)>t)throw new Error('Expected '+a+' ≈ '+b)};
+test('line creation and length',()=>{const s=new SketchEngine();const e=s.addLine({x:0,y:0},{x:3,y:4});near(Math.hypot(e.end.x-e.start.x,e.end.y-e.start.y),5)});
+test('reject zero length line',()=>{const s=new SketchEngine();let threw=false;try{s.addLine({x:1,y:1},{x:1,y:1})}catch{threw=true}if(!threw)throw new Error('Expected rejection')});
+test('polyline creation',()=>{const s=new SketchEngine();const e=s.addPolyline([{x:0,y:0},{x:1,y:0},{x:1,y:1}]);if(e.points.length!==3)throw new Error('Wrong point count')});
+test('rectangle area',()=>{const s=new SketchEngine();const e=s.addRectangle({x:4,y:3},{x:0,y:0});near(Math.abs(s.signedArea(e)),12)});
+test('circle validation',()=>{const s=new SketchEngine();s.addCircle({x:0,y:0},2);let threw=false;try{s.addCircle({x:0,y:0},0)}catch{threw=true}if(!threw)throw new Error('Expected invalid radius')});
+test('arc sweep normalization',()=>{const s=new SketchEngine();const e=s.addArc({x:0,y:0},1,Math.PI,0);near(e.endAngle,2*Math.PI)});
+test('polygon rejects bow-tie self intersection',()=>{const s=new SketchEngine();let threw=false;try{s.addPolygon([{x:0,y:0},{x:2,y:2},{x:0,y:2},{x:2,y:0}])}catch{threw=true}if(!threw)throw new Error('Expected self-intersection rejection')});
+test('polygon validates convex loop',()=>{const s=new SketchEngine();const e=s.addPolygon([{x:0,y:0},{x:2,y:0},{x:2,y:2},{x:0,y:2}]);if(!s.validate(e.id).valid)throw new Error('Expected valid polygon')});
+test('move entity',()=>{const s=new SketchEngine();const e=s.addLine({x:0,y:0},{x:1,y:0});s.move(e.id,2,3);near(e.start.x,2);near(e.end.y,3)});
+test('rotate entity',()=>{const s=new SketchEngine();const e=s.addLine({x:1,y:0},{x:2,y:0});s.rotate(e.id,Math.PI/2);near(e.start.x,0);near(e.start.y,1)});
+test('split line',()=>{const s=new SketchEngine();const e=s.addLine({x:0,y:0},{x:4,y:0});const parts=s.splitLine(e.id,{x:2,y:0});if(!parts||parts.length!==2||s.get(e.id))throw new Error('Split failed');near(parts[0].end.x,2);near(parts[1].start.x,2)});
+test('export/import round trip',()=>{const a=new SketchEngine();a.addRectangle({x:0,y:0},{x:2,y:1});a.addCircle({x:3,y:3},.5);const data=a.exportData(),b=new SketchEngine();b.importData(data);if(b.list().length!==2||b.list()[0].type!=='polyline')throw new Error('Round trip failed')});
+test('delete entity',()=>{const s=new SketchEngine();const e=s.addCircle({x:0,y:0},1);if(!s.delete(e.id)||s.get(e.id))throw new Error('Delete failed')});
+export function runSketchEngineTests(){return{passed:cases.filter(x=>x.ok).length,failed:cases.filter(x=>!x.ok).length,cases}};
