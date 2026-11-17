@@ -151,3 +151,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 /* Definitive fix: toolbar mode buttons must not inherit .row>* flex:1 */
 .viewport-topbar .viewport-tools .row>button.geometry-mode.icon-tool,.viewport-topbar .viewport-tools .row>#detectFaces.icon-tool{flex:0 0 38px!important;inline-size:38px!important;min-inline-size:38px!important;max-inline-size:38px!important;block-size:36px!important;min-block-size:36px!important;max-block-size:36px!important;}
 .viewport-topbar .viewport-tools .row>button.geometry-mode.icon-tool svg,.viewport-topbar .viewport-tools .row>#detectFaces.icon-tool svg{flex:none!important;inline-size:19px!important;block-size:19px!important;}
+
+/* Keep Clear button compact on wrapped tool rows */
+.viewport-topbar .viewport-tools .row>#clear{flex:0 0 112px!important;width:112px!important;min-width:112px!important;max-width:112px!important;height:36px!important;min-height:36px!important;white-space:nowrap!important;}
+.viewport-topbar .viewport-tools .row>.geometry-mode-label{flex:0 0 auto!important;min-width:0!important;white-space:nowrap!important;font-size:8px!important;padding:0 2px!important;}
