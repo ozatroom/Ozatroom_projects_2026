@@ -1,0 +1,17 @@
+import { GeometryCore, GeometryError } from './geometry-core.js';
+
+export function runGeometryCoreTests(){
+  const results=[];
+  const test=(name,fn)=>{try{fn();results.push({name,passed:true})}catch(error){results.push({name,passed:false,error:error.message})}};
+  test('Create three vertices and three edges',()=>{const g=new GeometryCore();const a=g.createVertex(0,0,0),b=g.createVertex(1,0,0),c=g.createVertex(0,1,0);g.createEdge(a.id,b.id);g.createEdge(b.id,c.id);g.createEdge(c.id,a.id);if(g.vertices.size!==3||g.edges.size!==3)throw Error('Unexpected topology count')});
+  test('Create triangular face',()=>{const g=new GeometryCore(),p=[[0,0],[1,0],[0,1]].map(([x,y])=>g.createVertex(x,y,0));const f=g.createFace(p.map(v=>v.id));if(Math.abs(f.area-.5)>1e-8)throw Error('Triangle area mismatch')});
+  test('Create rectangular face',()=>{const g=new GeometryCore(),p=[[0,0],[2,0],[2,1],[0,1]].map(([x,y])=>g.createVertex(x,y,0));const f=g.createFace(p.map(v=>v.id));if(Math.abs(f.area-2)>1e-8)throw Error('Rectangle area mismatch')});
+  test('Create face with an inner loop',()=>{const g=new GeometryCore(),outer=[[0,0],[4,0],[4,4],[0,4]].map(([x,y])=>g.createVertex(x,y,0)),inner=[[1,1],[1,2],[2,2],[2,1]].map(([x,y])=>g.createVertex(x,y,0));const f=g.createFace(outer.map(v=>v.id),[inner.map(v=>v.id)]);if(Math.abs(f.area-15)>1e-8)throw Error('Face area with hole mismatch')});
+  test('Move vertex updates face area',()=>{const g=new GeometryCore(),p=[[0,0],[1,0],[0,1]].map(([x,y])=>g.createVertex(x,y,0));const f=g.createFace(p.map(v=>v.id));g.moveVertex(p[1].id,2,0,0);if(Math.abs(g.faces.get(f.id).area-1)>1e-8)throw Error('Face did not update')});
+  test('Split edge creates a new vertex and two edges',()=>{const g=new GeometryCore(),a=g.createVertex(0,0),b=g.createVertex(2,0),e=g.createEdge(a.id,b.id);g.splitEdge(e.id,{x:1,y:0,z:0});if(g.vertices.size!==3||g.edges.size!==2)throw Error('Split failed')});
+  test('Merge vertices removes degenerate edges',()=>{const g=new GeometryCore(),a=g.createVertex(0,0),b=g.createVertex(1,0),c=g.createVertex(2,0);g.createEdge(a.id,b.id);g.createEdge(b.id,c.id);g.mergeVertices(b.id,a.id);if(g.vertices.size!==2||[...g.edges.values()].some(e=>e.startVertexId===e.endVertexId))throw Error('Merge failed')});
+  test('Delete edge removes dependent face safely',()=>{const g=new GeometryCore(),p=[[0,0],[1,0],[0,1]].map(([x,y])=>g.createVertex(x,y,0)),f=g.createFace(p.map(v=>v.id));g.deleteGeometry(f.outerLoop[0]);if(g.faces.has(f.id))throw Error('Dependent face remains')});
+  test('Undo and redo restore topology',()=>{const g=new GeometryCore();const v=g.createVertex(0,0,0);g.undo();if(g.vertices.size!==0)throw Error('Undo failed');g.redo();if(!g.vertices.has(v.id))throw Error('Redo failed')});
+  test('Validation detects invalid references',()=>{const g=new GeometryCore();g.edges.set('broken',{id:'broken',startVertexId:'missing-a',endVertexId:'missing-b',connectedFaces:[]});const r=g.validateGeometry();if(r.isValid||!r.invalidElementIds.includes('broken'))throw Error('Invalid reference was not detected')});
+  return {passed:results.filter(x=>x.passed).length,failed:results.filter(x=>!x.passed).length,results};
+}
