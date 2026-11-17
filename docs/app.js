@@ -92,6 +92,22 @@ function rebuild(){if(!THREE||!group)return;group.clear();const h=n('height',3),
  }
  stairs.forEach(st=>{const count=Math.max(2,Math.min(40,st.steps||12)),run=st.run||3,rise=st.rise||1.8,width=st.width||1;for(let i=0;i<count;i++){const step=new THREE.Mesh(new THREE.BoxGeometry(width,rise/count,run/count),new THREE.MeshStandardMaterial({color:isObjectSelected(st.id)?0xffbd59:0x9a9b98,emissive:isObjectSelected(st.id)?0x573000:0x000000}));step.position.set(st.x,((i+1)*rise/count)/2,st.z-run/2+(i+.5)*run/count);step.rotation.y=st.rotation||0;step.userData.objectId=st.id;group.add(step)}});lights.forEach(l=>{const bulb=new THREE.Mesh(new THREE.SphereGeometry(.09,12,8),new THREE.MeshStandardMaterial({color:0xffdf9b,emissive:0xffc45c,emissiveIntensity:1.8}));bulb.position.set(l.x,l.y,l.z);bulb.userData.objectId=l.id;group.add(bulb);const point=new THREE.PointLight(0xffdfad,l.intensity||2, l.distance||5);point.position.set(l.x,l.y,l.z);group.add(point)});furniture.forEach(f=>{const m=new THREE.Mesh(new THREE.BoxGeometry(f.width||1,.75,f.depth||.8),new THREE.MeshStandardMaterial({color:selected===f.id?0xffbd59:0x987e66,emissive:selected===f.id?0x573000:0x000000}));m.userData.objectId=f.id;m.position.set(f.x,.375,f.z);m.rotation.y=f.rotation||0;group.add(m)});
  if(roofEnabled&&walls.length){const pts=walls.flatMap(w=>[w.a,w.b]),minX=Math.min(...pts.map(p=>p.x)),maxX=Math.max(...pts.map(p=>p.x)),minZ=Math.min(...pts.map(p=>p.y)),maxZ=Math.max(...pts.map(p=>p.y)),mid=(minX+maxX)/2,top=h+.8,verts=new Float32Array([minX,h,minZ,maxX,h,minZ,mid,top,minZ,minX,h,maxZ,maxX,h,maxZ,mid,top,maxZ]),g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(verts,3));g.setIndex([0,1,2,3,5,4]);g.computeVertexNormals();group.add(new THREE.Mesh(g,new THREE.MeshStandardMaterial({color:0x596b60,side:THREE.DoubleSide})))}
+ // Geometry Core face surfaces: derived 3D overlays, never source geometry.
+ if(geometryCore?.faces?.size){
+  const faceMaterial=new THREE.MeshStandardMaterial({color:0xe7ad59,transparent:true,opacity:.22,side:THREE.DoubleSide,depthWrite:false});
+  for(const face of geometryCore.faces.values()){
+   if(face.visible===false||(face.innerLoops&&face.innerLoops.length))continue;
+   const ids=geometryCore._loopVertexIds(face.outerLoop||[]);
+   if(ids.length<3)continue;
+   const points=ids.map(id=>geometryCore.vertices.get(id));
+   if(points.some(p=>!p))continue;
+   const positions=[];points.forEach(p=>positions.push(p.x,p.z,p.y));
+   const indices=[];for(let i=1;i<points.length-1;i++)indices.push(0,i,i+1);
+   const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));geo.setIndex(indices);geo.computeVertexNormals();
+   const mesh=new THREE.Mesh(geo,faceMaterial);mesh.userData.geometryFace={id:face.id};mesh.userData.objectId=face.id;mesh.renderOrder=3;group.add(mesh);
+  }
+ }
+
 }
 function syncGeometryCore(){
  try{
@@ -113,7 +129,7 @@ function syncGeometryCore(){
 function runFaceDetection(){
  const result=geometryCore.detectFaces({create:true});
  const status=$('faceDetectionStatus');
- if(status)status.innerHTML='<b>FACE DETECTION · v1</b><span>Контуров найдено: '+result.loops+' · новых граней: '+result.created.length+'</span><span>'+result.skipped.length+' пропущено · ошибок: '+result.errors.length+(result.limited?' · достигнут лимит поиска':'')+'</span>';
+ if(status)status.innerHTML='<b>FACE DETECTION · v1</b><span>Контуров: '+result.loops+' · новых граней: '+result.created.length+'</span><span>3D-поверхностей: '+geometryCore.faces.size+' · пропущено: '+result.skipped.length+' · ошибок: '+result.errors.length+(result.limited?' · достигнут лимит поиска':'')+'</span>';
  if(result.created.length){draw();rebuild();updateStats();renderOutliner();renderDetails();persistLocal();if(transformGizmo)attachGizmo()}
  if(result.errors.length)console.warn('Face Detection errors:',result.errors);
 }
