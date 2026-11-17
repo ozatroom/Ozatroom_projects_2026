@@ -140,3 +140,10 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .face-detect-button.icon-tool{background:#263a2e!important;border:1px solid #71977b!important;color:#bce5c6!important}
 .face-detect-button.icon-tool:hover{background:#31533c!important}
 .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+
+/* Keep geometry icon controls compact and prevent flex/grid stretching */
+.viewport-tools .row{display:flex!important;align-items:center!important;flex-wrap:wrap!important;justify-content:flex-start!important;}
+.viewport-tools .row>.geometry-mode.icon-tool,.viewport-tools .row>#detectFaces.icon-tool{flex:0 0 38px!important;width:38px!important;min-width:38px!important;max-width:38px!important;height:36px!important;min-height:36px!important;max-height:36px!important;padding:7px!important;}
+.viewport-tools .row>.geometry-mode.icon-tool svg,.viewport-tools .row>#detectFaces.icon-tool svg{width:19px!important;height:19px!important;flex:0 0 19px!important;}
+.viewport-tools .row>.geometry-mode.icon-tool .sr-only,.viewport-tools .row>#detectFaces.icon-tool .sr-only{display:none!important;}
+@media(max-width:760px){.viewport-tools .row{display:flex!important;flex-wrap:wrap!important}.viewport-tools .row>.geometry-mode.icon-tool,.viewport-tools .row>#detectFaces.icon-tool{flex:0 0 38px!important}}
