@@ -87,6 +87,67 @@ export class GeometryCore {
     if(area<=EPS)throw new GeometryError('ZERO_AREA_FACE','Площадь поверхности равна нулю',ids);
     return {normal,area};
   }
+  detectClosedLoops({maxLoops=2000}={}) {
+    this._rebuildAdjacency();
+    const adjacency=new Map([...this.vertices.keys()].map(id=>[id,[]]));
+    for(const e of this.edges.values()){
+      if(!adjacency.has(e.startVertexId)||!adjacency.has(e.endVertexId))continue;
+      adjacency.get(e.startVertexId).push(e.endVertexId);
+      adjacency.get(e.endVertexId).push(e.startVertexId);
+    }
+    for(const list of adjacency.values())list.sort();
+    const canonical=ids=>{
+      const min=Math.min(...ids.map((_,i)=>i));
+      const rotations=[];
+      for(let i=0;i<ids.length;i++)if(ids[i]===ids[min]){rotations.push(ids.slice(i).concat(ids.slice(0,i)));const rev=[...ids].reverse();const j=rev.indexOf(ids[min]);rotations.push(rev.slice(j).concat(rev.slice(0,j)));}
+      rotations.sort((a,b)=>a.join('|').localeCompare(b.join('|')));
+      return rotations[0];
+    };
+    const found=new Map(),ordered=[...adjacency.keys()].sort();
+    for(const start of ordered){
+      const path=[start],visited=new Set(path);
+      const walk=current=>{
+        if(found.size>=maxLoops)return;
+        for(const next of adjacency.get(current)||[]){
+          if(next===start&&path.length>=3){
+            const loop=canonical(path),key=loop.join('|');
+            if(!found.has(key)){
+              let chord=false;
+              for(let i=0;i<loop.length&&!chord;i++)for(let j=i+1;j<loop.length;j++){
+                if(j===i+1||(i===0&&j===loop.length-1))continue;
+                if(this._findEdge(loop[i],loop[j])){chord=true;break;}
+              }
+              if(!chord)found.set(key,loop);
+            }
+          }else if(next>start&&!visited.has(next)&&path.length<64){
+            visited.add(next);path.push(next);walk(next);path.pop();visited.delete(next);
+          }
+          if(found.size>=maxLoops)return;
+        }
+      };
+      walk(start);
+      if(found.size>=maxLoops)break;
+    }
+    return [...found.values()].map(vertexIds=>({vertexIds,edgeIds:vertexIds.map((id,i)=>this._findEdge(id,vertexIds[(i+1)%vertexIds.length])?.id).filter(Boolean)}));
+  }
+  detectFaces({create=true,maxLoops=2000}={}) {
+    const loops=this.detectClosedLoops({maxLoops}),existing=new Set();
+    const signature=ids=>{const variants=[];for(let i=0;i<ids.length;i++){variants.push(ids.slice(i).concat(ids.slice(0,i)).join('|'));const r=[...ids].reverse();const j=r.indexOf(ids[i]);variants.push(r.slice(j).concat(r.slice(0,j)).join('|'));}return variants.sort()[0];};
+    for(const face of this.faces.values()){
+      const ids=this._loopVertexIds(face.outerLoop);if(ids.length>=3)existing.add(signature(ids));
+    }
+    const created=[],skipped=[],errors=[];
+    for(const loop of loops){
+      const key=signature(loop.vertexIds);
+      if(existing.has(key)){skipped.push({vertexIds:loop.vertexIds,reason:'FACE_EXISTS'});continue;}
+      if(!create){skipped.push({vertexIds:loop.vertexIds,reason:'PREVIEW_ONLY'});continue;}
+      try{
+        const face=this.createFace(loop.vertexIds);
+        existing.add(key);created.push(face.id);
+      }catch(error){errors.push({code:error.code||'FACE_DETECTION_ERROR',message:error.message,vertexIds:loop.vertexIds});}
+    }
+    return {loops:loops.length,created,skipped,errors,limited:loops.length>=maxLoops};
+  }
   createFace(outerPoints,innerLoops=[],options={}) {
     return this._transaction(()=>{
       const outer=this._resolveLoop(outerPoints),holes=innerLoops.map(loop=>this._resolveLoop(loop));
