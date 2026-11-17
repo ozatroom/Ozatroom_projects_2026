@@ -159,3 +159,15 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .viewport-topbar .viewport-tools .row>.geometry-mode-label{flex:0 0 auto!important;min-width:0!important;white-space:nowrap!important;font-size:8px!important;padding:0 2px!important;}
 
 .sketch-label{font-size:9px;letter-spacing:1px;color:#80cde2;font-weight:800;padding:0 3px;align-self:center}.viewport-tools [data-sketch-tool]{border-color:#456a76;background:#1c3035;color:#bce8f1}.viewport-tools [data-sketch-tool].active{background:#276174;border-color:#77cde2;color:#fff}.viewport-tools #finishSketch{background:#294b3c;border-color:#6d9d7d;color:#d4f0dc}@media(max-width:760px){.sketch-label{display:none}.viewport-tools [data-sketch-tool],.viewport-tools #finishSketch{font-size:9px;padding:6px 4px}}
+
+/* Stable viewport toolbar layout: never compress or overlap tool buttons. */
+.viewport-topbar{align-items:flex-start!important}
+.viewport-tools{flex:1 1 100%!important;width:100%;min-width:0;display:block!important}
+.viewport-tools>.row{display:flex!important;flex-wrap:wrap!important;align-items:center;justify-content:flex-start;gap:6px;width:100%;min-width:0}
+.viewport-tools>.row>*{flex:0 0 auto!important;min-width:0}
+.viewport-tools [data-sketch-tool],.viewport-tools #finishSketch,.viewport-tools #clearSketches{height:34px;min-height:34px;padding:6px 9px;font-size:10px;line-height:1;white-space:nowrap}
+.viewport-tools [data-sketch-tool]{min-width:84px!important}
+.viewport-tools #finishSketch{min-width:78px;background:#294b3c;border-color:#6d9d7d;color:#d4f0dc}
+.viewport-tools #clearSketches{min-width:112px;background:#342b28;border-color:#72564a;color:#e7c4b6}
+.viewport-modes,.viewport-dimension-toggle,.viewport-transform{flex:0 0 auto!important;max-width:100%}
+@media(max-width:760px){.viewport-tools>.row{display:flex!important;flex-wrap:wrap!important}.viewport-tools [data-sketch-tool]{min-width:0!important;padding:6px 7px;font-size:9px}.viewport-tools #clearSketches{min-width:0}.viewport-topbar{align-items:stretch!important}}
