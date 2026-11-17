@@ -157,3 +157,5 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 /* Keep Clear button compact on wrapped tool rows */
 .viewport-topbar .viewport-tools .row>#clear{flex:0 0 112px!important;width:112px!important;min-width:112px!important;max-width:112px!important;height:36px!important;min-height:36px!important;white-space:nowrap!important;}
 .viewport-topbar .viewport-tools .row>.geometry-mode-label{flex:0 0 auto!important;min-width:0!important;white-space:nowrap!important;font-size:8px!important;padding:0 2px!important;}
+
+.sketch-label{font-size:9px;letter-spacing:1px;color:#80cde2;font-weight:800;padding:0 3px;align-self:center}.viewport-tools [data-sketch-tool]{border-color:#456a76;background:#1c3035;color:#bce8f1}.viewport-tools [data-sketch-tool].active{background:#276174;border-color:#77cde2;color:#fff}.viewport-tools #finishSketch{background:#294b3c;border-color:#6d9d7d;color:#d4f0dc}@media(max-width:760px){.sketch-label{display:none}.viewport-tools [data-sketch-tool],.viewport-tools #finishSketch{font-size:9px;padding:6px 4px}}
