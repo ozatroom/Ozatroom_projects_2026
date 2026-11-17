@@ -131,3 +131,12 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 
 .face-detect-button{background:linear-gradient(135deg,#815b2e,#a8793f)!important;border-color:#d6a45d!important;color:#fff!important;font-weight:700!important}.face-detection-status{display:inline-flex;align-items:center;min-height:30px;padding:5px 10px;border:1px solid #3c5749;border-radius:7px;background:#142019;color:#b9c9bf;font-size:10px;white-space:normal;max-width:330px}.face-detection-status b{color:#e5ad57}.viewport-dimension-toggle{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 @media(max-width:760px){.face-detection-status{max-width:100%;width:100%}}
+
+/* Compact geometry mode icon toolbar */
+.viewport-tools .geometry-mode.icon-tool,.viewport-tools .face-detect-button.icon-tool{width:38px;min-width:38px;height:36px;min-height:36px;padding:7px!important;display:inline-flex;align-items:center;justify-content:center;gap:0;border-radius:8px}
+.geometry-mode.icon-tool svg,.face-detect-button.icon-tool svg{width:19px;height:19px;display:block;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.geometry-mode.icon-tool{background:#202c25;border:1px solid #405348;color:#c6d3ca}
+.geometry-mode.icon-tool.active{background:#a8793d!important;border-color:#e0b36f!important;color:#fff!important;box-shadow:0 0 0 1px #e0b36f33}
+.face-detect-button.icon-tool{background:#263a2e!important;border:1px solid #71977b!important;color:#bce5c6!important}
+.face-detect-button.icon-tool:hover{background:#31533c!important}
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
