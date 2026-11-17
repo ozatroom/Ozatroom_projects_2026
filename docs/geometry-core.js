@@ -1,16 +1,16 @@
+import { Point3, Vector3 } from './vector-math.js?v=20261118-01';
 // OZATROOM BIM · Geometry Core v1.0
 // Canonical topology model. Coordinates are stored in metres (X/Y horizontal, Z vertical).
 // Rendering meshes are derived data and never replace this model.
 
 const EPS = 1e-8;
 const uid = (prefix='g') => prefix + '_' + (globalThis.crypto?.randomUUID?.() || Math.random().toString(36).slice(2, 12));
-
 const clone = value => JSON.parse(JSON.stringify(value));
-const distance3 = (a,b) => Math.hypot(a.x-b.x,a.y-b.y,a.z-b.z);
-const cross = (a,b) => ({x:a.y*b.z-a.z*b.y,y:a.z*b.x-a.x*b.z,z:a.x*b.y-a.y*b.x});
-const dot = (a,b) => a.x*b.x+a.y*b.y+a.z*b.z;
-const sub = (a,b) => ({x:a.x-b.x,y:a.y-b.y,z:a.z-b.z});
-const normalize = v => { const l=Math.hypot(v.x,v.y,v.z); return l>EPS?{x:v.x/l,y:v.y/l,z:v.z/l}:{x:0,y:0,z:0}; };
+const distance3 = (a,b) => Point3.from(a).distanceTo(b);
+const cross = (a,b) => new Vector3(a.x,a.y,a.z).cross(new Vector3(b.x,b.y,b.z));
+const dot = (a,b) => new Vector3(a.x,a.y,a.z).dot(new Vector3(b.x,b.y,b.z));
+const sub = (a,b) => Vector3.between(b,a);
+const normalize = v => { const l=Math.hypot(v.x,v.y,v.z); return l>EPS?new Vector3(v.x,v.y,v.z).normalized():{x:0,y:0,z:0}; };
 const keyPair = (a,b) => a<b ? a+'|'+b : b+'|'+a;
 
 export class GeometryError extends Error {
