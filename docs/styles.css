@@ -126,3 +126,5 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .outliner-item.selected{border:2px solid #ffc66d!important;background:rgba(255,190,90,.24)!important;color:#fff!important;box-shadow:inset 3px 0 0 #ffc66d,0 0 0 1px rgba(255,198,109,.18)}
 
 .geometry-status{display:grid;gap:5px;padding:10px;margin:8px 0 14px;border:1px solid #3c5749;border-radius:9px;background:#142019;font-size:11px;color:#b9c9bf}.geometry-status b{color:#e5ad57;letter-spacing:1px}.geometry-status span{line-height:1.4}.geometry-ok{color:#8fd3a5}.geometry-error{color:#ff9b86}
+
+.geometry-mode-label{font-size:9px;letter-spacing:1px;color:#91a99b;padding:0 5px;align-self:center}.geometry-mode{font-size:11px!important;padding:7px 9px!important}.geometry-mode.active{background:#a8793d!important;color:#fff!important;border-color:#d6a45d!important}
