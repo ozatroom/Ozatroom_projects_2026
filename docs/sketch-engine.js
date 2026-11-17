@@ -76,9 +76,9 @@ export class SketchEngine {
   }
   move(id,dx,dy,dz=0) {
     const e=this.get(id);if(!e||![dx,dy,dz].every(Number.isFinite))return false;
-    if(e.type==='line'){e.start=e.start.translated(dx,dy,dz);e.end=e.end.translated(dx,dy,dz)}
-    else if(['polyline','polygon'].includes(e.type))e.points=e.points.map(p=>p.translated(dx,dy,dz));
-    else if(e.center)e.center=e.center.translated(dx,dy,dz);
+    if(e.type==='line'){e.start=e.start.translated(new Vector3(dx,dy,dz));e.end=e.end.translated(new Vector3(dx,dy,dz))}
+    else if(['polyline','polygon'].includes(e.type))e.points=e.points.map(p=>p.translated(new Vector3(dx,dy,dz)));
+    else if(e.center)e.center=e.center.translated(new Vector3(dx,dy,dz));
     else return false;
     this.revision++;return true;
   }
