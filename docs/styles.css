@@ -116,3 +116,8 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
  .viewport-transform .gizmo-tools button{font-size:10px;padding:7px 3px}
  #plan,#model{min-height:0;height:100%}
 }
+
+.viewport-dimension-toggle{flex:0 0 auto}
+.viewport-dimension-toggle button{min-height:34px;padding:7px 12px;border-radius:8px;font-size:11px;font-weight:700}
+.viewport-dimension-toggle button.active{background:linear-gradient(135deg,#815b2e,#a8793f);border-color:#d8aa67;color:#fff}
+@media(max-width:760px){.viewport-dimension-toggle{flex:1}.viewport-dimension-toggle button{width:100%}}
