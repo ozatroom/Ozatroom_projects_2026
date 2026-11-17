@@ -11,3 +11,79 @@
 #drawingSheets{height:100%;min-height:650px;overflow:auto;background:#34383d;padding:14px;box-sizing:border-box}.sheet-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 12px;background:#202428;border:1px solid #454b52;border-radius:8px;margin-bottom:12px}.sheet-toolbar small{display:block;color:#aeb8c3;margin-top:4px}.sheet-stage{display:flex;justify-content:center;align-items:flex-start;padding:18px;overflow:auto;background:#454a50;border-radius:8px}.sheet-stage canvas{display:block;width:min(100%,1100px);height:auto;background:#fff;box-shadow:0 8px 28px #0008}.sheet-note{color:#cbd2d9;font-size:12px;padding:10px 4px}@media print{body *{visibility:hidden!important}#drawingSheets,#drawingSheets *{visibility:visible!important}#drawingSheets{position:absolute;inset:0;width:100%;height:100%;padding:0;background:#fff}.sheet-toolbar,.sheet-note{display:none!important}.sheet-stage{padding:0;background:#fff}#sheetCanvas{width:100%!important;max-height:100vh;box-shadow:none!important}}
 
 .drawing-workspace{display:grid;grid-template-columns:minmax(220px,290px) minmax(0,1fr);gap:14px;align-items:start}.drawing-nav{display:flex;flex-direction:column;gap:6px;padding:12px;background:#202428;border:1px solid #454b52;border-radius:8px}.drawing-nav-title{font-size:11px;letter-spacing:1px;font-weight:800;color:#d99a43;padding:5px 4px 10px}.drawing-nav .drawing-item{text-align:left;white-space:normal;line-height:1.35;min-height:42px;padding:9px 10px;background:#2c3137;border:1px solid #424950;color:#e1e6eb;border-radius:5px;font-size:12px}.drawing-nav .drawing-item.active{background:#8f5d20;border-color:#e4a84d;color:white}.drawing-preview{min-width:0}.drawing-preview .sheet-stage{padding:12px}@media(max-width:850px){.drawing-workspace{grid-template-columns:1fr}.drawing-nav{display:grid;grid-template-columns:1fr 1fr}.drawing-nav-title{grid-column:1/-1}}
+
+/* OZATROOM BIM · premium workspace refresh */
+:root{color-scheme:dark;--bg:#101513;--panel:#19211e;--panel2:#202a25;--line:#34433b;--text:#edf3ef;--muted:#9eaea5;--accent:#c99a55;--accent2:#83b59a;--danger:#d47770;--shadow:0 16px 40px #0005}
+html,body{background:radial-gradient(ellipse at 48% -15%,#25352d 0,#111815 52%,#0d1210 100%);color:var(--text);font-family:Inter,"Segoe UI",Arial,sans-serif;font-size:13px}
+header{height:58px;padding:0 18px;gap:10px;background:#121a16ed;border-bottom:1px solid #344239;box-shadow:0 6px 24px #0003;backdrop-filter:blur(18px)}
+.brand{font-size:14px;letter-spacing:1.7px}.brand b{color:var(--accent)}
+.editor-menu{padding:0 14px;gap:20px}.editor-menu span{cursor:pointer;transition:color .18s}.editor-menu span:hover{color:var(--accent)}
+header button{border-radius:8px!important;padding:8px 13px!important;font-size:12px;font-weight:600}
+header button#saveProject{background:linear-gradient(135deg,#b98542,#d4a965);border-color:#e2bc7c;color:#17140f}
+main{padding:12px;gap:12px;grid-template-columns:270px minmax(320px,1fr) 310px;min-height:calc(100vh - 58px)}
+.tools,.summary{background:linear-gradient(160deg,#1d2822f5,#17201bf5);border:1px solid #35443b;border-radius:12px;padding:13px;box-shadow:var(--shadow);gap:9px}
+.tools:before,.summary:before{color:#91a79a;border-color:#35443b;padding:5px 3px 11px;font-size:9px;letter-spacing:1.5px}
+.tools:before{content:"МОДЕЛИРОВАНИЕ И ИНСТРУМЕНТЫ"}.summary:before{content:"СВОЙСТВА И ДАННЫЕ ПРОЕКТА"}
+button{background:linear-gradient(180deg,#2a3730,#222d27);color:#e8f0eb;border:1px solid #405047;border-radius:7px;padding:9px 10px;transition:background .16s,border-color .16s,transform .16s,box-shadow .16s}
+button:hover{background:#35463c;border-color:#6b8876;box-shadow:0 4px 14px #0003;transform:translateY(-1px)}
+button:active{transform:translateY(0)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #d7a85e;outline-offset:2px}
+.tools button.active,.tabs button.active{background:linear-gradient(135deg,#8d6534,#b9894b);border-color:#e0b36e;color:#fff;box-shadow:0 4px 14px #9a6c3033}
+.tools>.row:first-child{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.tools>.row:first-child button{min-height:38px;font-size:11px;border-radius:7px}
+.tools label{color:#aabbb0;font-size:11px;margin:3px 0 6px}
+.tools input,.details input{background:#111a15;border:1px solid #405047;color:#f2f6f3;border-radius:7px;padding:9px}
+.tools input:hover,.details input:hover{border-color:#718c7a}
+.tabs{padding:4px;background:#111a15;border:1px solid #34443a;border-radius:9px;gap:4px}
+.tabs button{border:0;background:transparent;padding:9px 5px}
+.advanced{border:1px solid #35443b;border-radius:10px;padding:11px;background:#151e19}
+.advanced h3,h3{color:#d7aa68;font-size:10px;letter-spacing:1.25px}
+.advanced button{min-height:36px;border-radius:7px}
+.advanced .report{background:#101813;border:1px solid #34443a;border-radius:8px;padding:11px;color:#c4d1c8}
+.views{background:#0d1310;border:1px solid #35443b;border-radius:12px;box-shadow:var(--shadow);min-height:calc(100vh - 82px)}
+#plan,#model{min-height:calc(100vh - 84px)}
+.hint{top:44px;left:14px;background:#17221cdd;border:1px solid #52685a;border-radius:8px;padding:9px 12px;color:#dce9e0;box-shadow:0 5px 18px #0004}
+.summary{overflow:auto;max-height:calc(100vh - 82px)}
+.stats{gap:7px}.stats div{background:linear-gradient(145deg,#243129,#1b251f);border:1px solid #394b40;border-radius:9px;padding:11px;color:#a9b9ae}.stats b{font-size:16px;color:#f0f5f1}
+.summary p{border-color:#35443b}.summary .total,.summary .total b,#usd{color:#e3b66f}
+.outliner{max-height:250px;gap:5px}.outliner-item{background:#131d17;border:1px solid #34443a;border-radius:7px;padding:9px}.outliner-item:hover{background:#24342a}.outliner-item.selected{border-color:#d4a45f;background:#3a3021}
+.details{background:#131d17;border:1px solid #35463b;border-radius:9px;padding:11px;gap:9px}.details label{color:#b9c8be}.details input{width:112px}.details .apply{background:#876132;border-color:#c49b5d}.details .danger{background:#613b36;border-color:#95615a}
+#drawingSheets{background:#242d28;border-radius:10px;padding:16px}
+.sheet-toolbar{background:#17211b;border:1px solid #3b4c41;border-radius:10px;padding:12px 14px}
+.sheet-toolbar b{letter-spacing:.7px;color:#e8c18a}.sheet-toolbar button{border-radius:7px}
+.sheet-stage{background:#333d37;border-radius:10px;padding:18px}
+.sheet-stage canvas{border-radius:2px;box-shadow:0 14px 34px #0008}
+.drawing-workspace{grid-template-columns:minmax(210px,260px) minmax(0,1fr);gap:14px}
+.drawing-nav{background:#17211b;border:1px solid #3a4b40;border-radius:10px;padding:11px}
+.drawing-nav-title{color:#d9ae72}
+.drawing-nav .drawing-item{background:#202c25;border-color:#3b4b41;border-radius:7px;min-height:42px}
+.drawing-nav .drawing-item:hover{background:#2d4034}
+.drawing-nav .drawing-item.active{background:linear-gradient(135deg,#815b2e,#a8793f);border-color:#d8aa67}
+.sheet-note{color:#b6c6bb}
+.ceiling-dialog,.addons-dialog{background:#1b2620;border:1px solid #53685a;border-radius:14px;box-shadow:0 24px 80px #000b}
+.ceiling-dialog select,.ceiling-dialog input{background:#111a15;border:1px solid #43564a;border-radius:8px}
+.addon-card{background:#121b16;border:1px solid #394b40;border-radius:9px}
+@media(min-width:1500px){main{grid-template-columns:285px minmax(450px,1fr) 330px;gap:14px;padding:14px}.tools,.summary{padding:15px}}
+@media(max-width:1050px){main{grid-template-columns:245px minmax(0,1fr) 265px;gap:8px;padding:8px}.editor-menu{gap:12px}}
+@media(max-width:760px){
+ header{position:sticky;min-height:54px;padding:7px 9px;gap:6px}.brand{font-size:12px}.editor-menu{display:none}
+ header button{padding:7px 9px!important;font-size:11px}
+ main{display:flex;flex-direction:column;padding:7px;gap:8px}
+ .tools{order:1;max-height:44vh;overflow:auto;padding:11px}
+ .tools>.row:first-child{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .tools>.row:first-child button{min-height:42px;font-size:10px}
+ .tools .row{flex-wrap:wrap}.tools .row>*{min-width:calc(50% - 6px)}
+ .tools label{min-width:calc(50% - 6px)}
+ .advanced{margin-top:8px}
+ .views{order:2;height:60vh;min-height:60vh}
+ #plan,#model{min-height:60vh}
+ #drawingSheets{min-height:60vh;padding:9px}
+ .drawing-workspace{grid-template-columns:1fr}
+ .drawing-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+ .drawing-nav-title{grid-column:1/-1}
+ .drawing-nav .drawing-item{font-size:10px;min-height:44px;padding:7px}
+ .sheet-toolbar{align-items:flex-start}.sheet-toolbar .row{width:100%;flex-wrap:wrap}.sheet-toolbar .row button{flex:1;min-width:100px}
+ .sheet-stage{padding:7px;overflow:auto}.sheet-stage canvas{width:900px;max-width:none}
+ .summary{order:3;max-height:none}
+ .editor-status{position:sticky;bottom:0;z-index:8;background:#111a15;border-top:1px solid #3a4b40}
+}
