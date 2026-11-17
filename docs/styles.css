@@ -127,6 +127,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 
 .geometry-status{display:grid;gap:5px;padding:10px;margin:8px 0 14px;border:1px solid #3c5749;border-radius:9px;background:#142019;font-size:11px;color:#b9c9bf}.geometry-status b{color:#e5ad57;letter-spacing:1px}.geometry-status span{line-height:1.4}.geometry-ok{color:#8fd3a5}.geometry-error{color:#ff9b86}
 
+.modeling-toggle{white-space:nowrap;min-width:126px;font-size:11px;font-weight:700;border:1px solid #607568;background:#24342d;color:#dce9df;border-radius:8px;padding:8px 10px;cursor:pointer}.modeling-toggle.active{background:#a77b3e;border-color:#e2b86d;color:#fff}.modeling-toggle:focus-visible{outline:2px solid #f0c778;outline-offset:2px}
 .geometry-mode-label{font-size:9px;letter-spacing:1px;color:#91a99b;padding:0 5px;align-self:center}.geometry-mode{font-size:11px!important;padding:7px 9px!important}.geometry-mode.active{background:#a8793d!important;color:#fff!important;border-color:#d6a45d!important}
 
 .face-detect-button{background:linear-gradient(135deg,#815b2e,#a8793f)!important;border-color:#d6a45d!important;color:#fff!important;font-weight:700!important}.face-detection-status{display:inline-flex;align-items:center;min-height:30px;padding:5px 10px;border:1px solid #3c5749;border-radius:7px;background:#142019;color:#b9c9bf;font-size:10px;white-space:normal;max-width:330px}.face-detection-status b{color:#e5ad57}.viewport-dimension-toggle{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
